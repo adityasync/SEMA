@@ -42,5 +42,3 @@ git clone https://github.com/adityasync/SEMA.git
 cd SEMA
 pip install -r requirements.txt
 python app.py
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
