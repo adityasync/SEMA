@@ -223,3 +223,59 @@ models = [
     'distilbert-base-nli-mean-tokens'
 ]
 
+with gr.Blocks(theme=gr.themes.Soft()) as demo:
+    gr.Markdown("# 🧪 SEMA: Semantic Evaluation & Matching Analyzer")
+    gr.Markdown("Explore sentence meaning, similarity, and more.")
+
+    with gr.Tabs():
+        with gr.Tab("📝 Input"):
+            sentence1 = gr.Textbox(label="Sentence 1", lines=4)
+            sentence2 = gr.Textbox(label="Sentence 2", lines=4)
+            model_name = gr.Dropdown(choices=models, value=models[0], label="Model")
+            visualization_type = gr.Radio(["Bar Chart", "Gauge", "Heatmap"], value="Gauge", label="Visualization")
+            perform_analysis = gr.Checkbox(label="Extra Text Analysis", value=True)
+            compare_dataset = gr.Checkbox(label="Compare with Dataset", value=False)
+            submit_btn = gr.Button("Run Analysis")
+            status_msg = gr.Textbox(label="Status", interactive=False)
+
+        with gr.Tab("📊 Results"):
+            sim_result = gr.Textbox(label="Similarity Score", interactive=False)
+            vis_output = gr.Plot(label="Visualization")
+            para_result = gr.Textbox(label="Paraphrase Detection", interactive=False)
+
+        with gr.Tab("🔬 Deep Insights"):
+            with gr.Accordion("📚 Text Statistics", open=True):
+                stats_output = gr.Markdown()
+            with gr.Accordion("🧠 Named Entity Recognition", open=False):
+                ner_output = gr.Markdown()
+            with gr.Accordion("💬 Sentiment Analysis", open=False):
+                sentiment_output = gr.Markdown()
+            with gr.Accordion("🌀 Paraphrase Suggestions", open=False):
+                para_output = gr.Markdown()
+            with gr.Accordion("🧾 POS Tagging", open=False):
+                pos_output = gr.Markdown()
+                pos_plot_output = gr.Plot()
+
+    gr.Examples([
+        ["The sky is blue.", "The sky has a beautiful blue color."],
+        ["What is your name?", "Can you tell me your name?"]
+    ], inputs=[sentence1, sentence2])
+
+    submit_btn.click(
+        fn=process_text,
+        inputs=[sentence1, sentence2, model_name, visualization_type, perform_analysis, compare_dataset],
+        outputs=[
+            sim_result,
+            vis_output,
+            stats_output,
+            para_result,
+            ner_output,
+            sentiment_output,
+            para_output,
+            pos_output,
+            pos_plot_output,
+            status_msg
+        ]
+    )
+
+demo.launch()
